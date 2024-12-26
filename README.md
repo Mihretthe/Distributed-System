@@ -7,14 +7,14 @@ The Health Tracking Application is a microservices-based system designed to help
 ## Architecture  
 The Health Tracking App consists of the following microservices and infrastructure components:  
 
-### 1. **Auth Service (Port 5001)**  
+### 1. **Auth Service (Port 8001)**  
 - **Endpoints:**  
   - `/auth/register`: User registration  
   - `/auth/login`: User login  
 - **Features:**  
   - Issues JWT tokens with user `{ id, username }`.  
   - Manages user authentication and authorization.  
-  - Queries and stores user data in MongoDB.  
+  - Queries and stores user data in MySQL.  
 
 ---
 
@@ -25,17 +25,17 @@ The Health Tracking App consists of the following microservices and infrastructu
 
 ---
 
-### 3. **Tracking Service (Port 5002)**  
+### 3. **Tracking Service (Port 8002)**  
 - **Endpoints:**  
   - `/track/add`: Add health tracking data (e.g., steps, calories, etc.).  
   - `/track/history`: Retrieve user's health tracking history.  
 - **Features:**  
-  - Persists user health data in MongoDB.  
+  - Persists user health data in MySQL.  
   - Publishes "new_health_data" events to RabbitMQ for notifications.  
 
 ---
 
-### 4. **Notification Service (Port 5003)**  
+### 4. **Notification Service (Port 8003)**  
 - **Endpoints:**  
   - `/notify/send`: Send custom notifications to users.  
   - `/notify/subscribe`: Subscribe to health tracking events.  
@@ -47,7 +47,7 @@ The Health Tracking App consists of the following microservices and infrastructu
 ---
 
 ## Communication Workflow  
-1. **Auth Service** validates and stores user credentials in MongoDB.  
+1. **Auth Service** validates and stores user credentials in MySQL.  
 2. **Tracking Service** reads/writes user health data and publishes events to RabbitMQ.  
 3. **RabbitMQ** handles "new_health_data" events via a fanout exchange and broadcasts them.  
 4. **Notification Service** subscribes to RabbitMQ and delivers notifications in real-time.  
@@ -58,9 +58,9 @@ The Health Tracking App consists of the following microservices and infrastructu
 Each microservice runs in its own Docker container, with MongoDB and RabbitMQ configured as separate containers.  
 
 ### **Ports**  
-- Auth Service: `5001`  
-- Tracking Service: `5002`  
-- Notification Service: `5003`  
+- Auth Service: `8001`  
+- Tracking Service: `8002`  
+- Notification Service: `8003`  
 - RabbitMQ: `5672` (AMQP), `15672` (Management UI)  
 
 
@@ -158,7 +158,7 @@ health_tracking_app/
 
 ## API Documentation
 
-Detailed API documentation can be found [here](#).
+
 
 ---
 
