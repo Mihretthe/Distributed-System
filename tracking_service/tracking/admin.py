@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Child, Location
+from .models import UserActivity, HealthMetrics
 
-admin.site.register(Child)
-admin.site.register(Location)
+admin.site.register(UserActivity)
+admin.site.register(HealthMetrics)
 
