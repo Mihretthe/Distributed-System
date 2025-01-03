@@ -1,9 +1,12 @@
-from django.urls import path
-from . import views
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from .views import UserActivityViewSet, HealthMetricsViewSet, CustomTokenRefreshView
+
+router = DefaultRouter()
+router.register(r'user-activities', UserActivityViewSet, basename='useractivity')
+router.register(r'health-metrics', HealthMetricsViewSet, basename='healthmetrics')
 
 urlpatterns = [
-    path('user-activities/', views.user_activity_list, name='user_activity_list'),
-    path('user-activities/<int:pk>/', views.user_activity_detail, name='user_activity_detail'),
-    path('health-metrics/', views.health_metrics_list, name='health_metrics_list'),
-    path('health-metrics/<int:pk>/', views.health_metrics_detail, name='health_metrics_detail'),
+    path('', include(router.urls)),
+    path('api/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
 ]

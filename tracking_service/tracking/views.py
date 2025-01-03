@@ -1,79 +1,44 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import viewsets
+from drf_spectacular.utils import extend_schema_view, extend_schema
+import rest_framework
 from .models import UserActivity, HealthMetrics
 from .serializers import UserActivitySerializer, HealthMetricsSerializer
+from rest_framework.permissions import IsAuthenticated
 
-#user activities
-@api_view(['GET', 'POST'])
-def user_activity_list(request):
-    if request.method == 'GET':
-        activities = UserActivity.objects.all()
-        serializer = UserActivitySerializer(activities, many=True)
-        return Response(serializer.data)
+from rest_framework_simplejwt.views import TokenRefreshView
 
-    elif request.method == 'POST':
-        serializer = UserActivitySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class CustomTokenRefreshView(TokenRefreshView):
+    renderer_classes = [rest_framework.renderers.JSONRenderer]
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_activity_detail(request, pk):
-    try:
-        activity = UserActivity.objects.get(pk=pk)
-    except UserActivity.DoesNotExist:
-        return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
-        serializer = UserActivitySerializer(activity)
-        return Response(serializer.data)
+@extend_schema_view(
+    list=extend_schema(tags=["User Activities"]),
+    retrieve=extend_schema(tags=["User Activities"]),
+    create=extend_schema(tags=["User Activities"]),
+    update=extend_schema(tags=["User Activities"]),
+    partial_update=extend_schema(tags=["User Activities"]),
+    destroy=extend_schema(tags=["User Activities"]),
+)
+class UserActivityViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing user activity instances.
+    """
+    queryset = UserActivity.objects.all()
+    serializer_class = UserActivitySerializer
+    permission_classes = [IsAuthenticated]
 
-    elif request.method == 'PUT':
-        serializer = UserActivitySerializer(activity, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        activity.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-#health-metrics
-@api_view(['GET', 'POST'])
-def health_metrics_list(request):
-    if request.method == 'GET':
-        metrics = HealthMetrics.objects.all()
-        serializer = HealthMetricsSerializer(metrics, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = HealthMetricsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def health_metrics_detail(request, pk):
-    try:
-        metric = HealthMetrics.objects.get(pk=pk)
-    except HealthMetrics.DoesNotExist:
-        return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = HealthMetricsSerializer(metric)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = HealthMetricsSerializer(metric, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        metric.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@extend_schema_view(
+    list=extend_schema(tags=["Health Metrics"]),
+    retrieve=extend_schema(tags=["Health Metrics"]),
+    create=extend_schema(tags=["Health Metrics"]),
+    update=extend_schema(tags=["Health Metrics"]),
+    partial_update=extend_schema(tags=["Health Metrics"]),
+    destroy=extend_schema(tags=["Health Metrics"]),
+)
+class HealthMetricsViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing health metrics instances.
+    """
+    queryset = HealthMetrics.objects.all()
+    serializer_class = HealthMetricsSerializer
+    permission_classes = [IsAuthenticated]
