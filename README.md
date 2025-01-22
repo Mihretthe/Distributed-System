@@ -1,6 +1,7 @@
 # Health Tracking Application
 
 ## Overview
+
 The Health Tracking Application is a microservices-based system designed to help users monitor their health metrics, manage notifications, and track overall wellness. The project consists of three core services: **Notification Service**, **User Management Service**, and **Tracking Service**. This project leverages modern tools and frameworks to ensure scalability, reliability, and ease of use.
 
 ---
