@@ -1,11 +1,25 @@
+version: "3.9"
 services:
-  web:
+  notification-service:
     build:
-      context: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-      - ./db.sqlite3:/app/db.sqlite3
+      context: ./notification_service
+      dockerfile: Dockerfile
+    container_name: notification_service
     environment:
-      - DJANGO_SETTINGS_MODULE=tracking_service.settings
+      - PYTHONUNBUFFERED=1
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest

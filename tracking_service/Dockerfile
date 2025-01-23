@@ -1,17 +1,18 @@
-# Use a lightweight Python image
-FROM python:3.10-slim
+# Dockerfile for the Tracking Service
+FROM python:3.9-slim
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file to the container
+# Copy the requirements file and install dependencies
 COPY requirements.txt .
-
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project into the container
+# Copy the application code
 COPY . .
 
-# Set the default command to run the Django app using Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "tracking_service.wsgi:application"]
+# Expose the tracking service port
+EXPOSE 8002
+
+# Run the Django server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8002"]

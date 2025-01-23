@@ -1,0 +1,12 @@
+services:
+  rabbitmq:
+    image: "rabbitmq:management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  notification-service:
+    build: .
+    command: python consumer.py
+    depends_on:
+      - rabbitmq
